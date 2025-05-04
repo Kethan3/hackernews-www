@@ -32,13 +32,13 @@ const Likes = ({ postId }: LikesProps) => {
   const handleLike = async () => {
     try {
       const method = liked ? "DELETE" : "POST";
-      const response = await fetch(`http://localhost:3000/likes/on/${postId}`, {
+      const response = await fetch(`${serverUrl}/likes/on/${postId}`, {
         method,
         credentials: "include",
       });
 
       if (response.status === 401) {
-        router.push("/auth/login");
+        router.push("/login");
         return;
       }
 
