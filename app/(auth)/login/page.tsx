@@ -39,11 +39,11 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    if (data?.user) {
-      console.log("Logged in:", data.user);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.user) {
+  //     console.log("Logged in:", data.user);
+  //   }
+  // }, [data]);
   return (
     <>
       <NavigationBar hideNavItems />
