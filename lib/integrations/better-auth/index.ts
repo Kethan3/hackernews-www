@@ -6,5 +6,8 @@ import { serverUrl } from "@/environment";
 export const betterAuthClient = createAuthClient({
   baseURL: serverUrl,
   plugins: [usernameClient(),nextCookies()],
+  fetchOptions: {
+    credentials: "include", // 🔥 Needed for sending/receiving cookies
+  },
 });
 
