@@ -7,6 +7,9 @@ import Link from "next/link";
 import NavigationBar from "@/components/Navbar";
 const LoginPage = () => {
   const { data } = betterAuthClient.useSession();
+  console.log(data?.session.token);
+  console.log(data?.session.userId);
+  console.log(data);
   const router = useRouter();
   const [loginData, setLoginData] = useState({
     username: "",
