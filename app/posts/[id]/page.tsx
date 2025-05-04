@@ -91,6 +91,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Likes from "@/app/pages/likes";
 import Comments from "@/app/pages/comments";
+import { serverUrl } from "@/environment";
 
 interface Post {
   id: string;
@@ -110,7 +111,7 @@ const PostPage = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/posts/${id}`);
+        const response = await fetch(`${serverUrl}/posts/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch post.");
         }

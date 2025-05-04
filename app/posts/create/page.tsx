@@ -118,6 +118,7 @@
 import React, { useState } from "react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
+import { serverUrl } from "@/environment";
 
 const CreatePostPage = () => {
   const { data: session } = betterAuthClient.useSession();
@@ -142,7 +143,7 @@ const CreatePostPage = () => {
     }
     setIsSubmitting(true);
     try {
-      const res = await fetch("https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/posts", {
+      const res = await fetch(`${serverUrl}/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

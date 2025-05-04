@@ -151,6 +151,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { serverUrl } from "@/environment";
 
 interface CommentsProps {
   postId: string;
@@ -173,7 +174,7 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const fetchComments = useCallback(async () => {
     try {
-      const response = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/comments/on/${postId}` ,{
+      const response = await fetch(`${serverUrl}/comments/on/${postId}` ,{
         credentials: "include",
       });
       if (response.ok) {
@@ -191,7 +192,7 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const handleAddComment = async () => {
     try {
-      const response = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/comments/on/${postId}`, {
+      const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -220,7 +221,7 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      const response = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/comments/${commentId}`, {
+      const response = await fetch(`${serverUrl}/comments/${commentId}`, {
         method: "DELETE",
         credentials: "include",
       });

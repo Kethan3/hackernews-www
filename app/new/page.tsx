@@ -87,6 +87,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { serverUrl } from "@/environment";
 
 interface Post {
   id: string;
@@ -105,7 +106,7 @@ const NewPostsPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/posts",{
+        const response = await fetch(`${serverUrl}/posts`,{
           credentials: "include",
         });
         if (!response.ok) {

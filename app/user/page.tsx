@@ -127,6 +127,7 @@
 
 "use client";
 
+import { serverUrl } from "@/environment";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useEffect, useState } from "react";
 
@@ -173,7 +174,7 @@ const UserProfilePage = () => {
       if (!data?.user?.id) return;
 
       try {
-        const res = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/users/me`, {
+        const res = await fetch(`${serverUrl}/users/me`, {
           method: "GET",
           credentials: "include",
         });
