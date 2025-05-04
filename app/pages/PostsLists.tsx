@@ -103,7 +103,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Likes from "./likes";
 import Comments from "./comments";
-import { serverUrl } from "@/environment";
 
 interface Post {
   id: string;
@@ -123,9 +122,7 @@ const PostList = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/posts`,{
-          method : "GET",
-        });
+        const response = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/posts`);
         if (!response.ok) {
           throw new Error("Failed to fetch posts.");
         }
