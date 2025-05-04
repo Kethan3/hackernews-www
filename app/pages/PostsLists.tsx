@@ -123,7 +123,7 @@ const PostList = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${serverUrl}/posts`,{
+        const response = await fetch(`https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/posts`,{
           method : "GET",
         });
         if (!response.ok) {
