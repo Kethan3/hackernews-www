@@ -1,7 +1,7 @@
 "use client";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
 import NavigationBar from "@/components/Navbar";
@@ -26,6 +26,11 @@ const LoginPage = () => {
         username: loginData.username,
         password: loginData.password,
       });
+      useEffect(() => {
+        if (data?.user) {
+          console.log("Logged in:", data.user);
+        }
+      }, [data]);
       if ('data' in response && response.data?.user) {
         router.push("/");
       } else {
