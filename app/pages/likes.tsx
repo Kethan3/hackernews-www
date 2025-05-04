@@ -200,7 +200,7 @@ const Likes = ({ postId }: LikesProps) => {
       });
 
       if (response.status === 401) {
-        router.push("/auth/login");
+        router.push("/login");
         return;
       }
 
