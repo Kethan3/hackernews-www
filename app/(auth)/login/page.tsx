@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import Link from "next/link";
-import NavigationBar from "@/components/NavBar";
+import NavigationBar from "@/components/NavigationBar";
+
 const LoginPage = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -46,7 +47,7 @@ const LoginPage = () => {
   // }, [data]);
   return (
     <>
-      <NavigationBar hideNavItems />
+      <NavigationBar  />
       {!data?.user && (
         <div className="container mx-auto min-h-[calc(100vh-3rem)] flex items-center justify-center bg-[#F1F1DB]">
           <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">

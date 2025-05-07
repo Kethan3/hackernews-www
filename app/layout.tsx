@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { PropsWithChildren } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
+import NavigationBar from "@/components/NavigationBar";
 
 
 
@@ -28,7 +29,7 @@ const RootLayout = ({ children }: PropsWithChildren) => {
           disableTransitionOnChange
         >
           <main>
-           
+           <NavigationBar/>
             <div>{children}</div>
           </main>
         </ThemeProvider>
