@@ -85,7 +85,7 @@ const SignUpPage = () => {
 
   return (
     <>
-      <NavigationBar />
+
       {!data?.user && (
         <div className="container mx-auto min-h-[calc(100vh-3rem)] flex items-center justify-center bg-[#F1F1DB]">
           <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
