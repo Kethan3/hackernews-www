@@ -1,8 +1,11 @@
+
+
 // "use client";
 
 // import React, { useState } from "react";
 // import { betterAuthClient } from "@/lib/integrations/better-auth";
 // import { useRouter } from "next/navigation";
+// import { serverUrl } from "@/environment";
 
 // const CreatePostPage = () => {
 //   const { data: session } = betterAuthClient.useSession();
@@ -27,17 +30,16 @@
 //     }
 //     setIsSubmitting(true);
 //     try {
-//       const res = await fetch("http://localhost:3000/posts", {
+//       const res = await fetch(`${serverUrl}/posts`, {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
-//           // BetterAuth automatically sets cookies/session, no need to manually set Authorization
 //         },
 //         body: JSON.stringify({
 //           title: formData.title,
 //           content: formData.content,
 //         }),
-//         credentials: "include", // Important: sends cookies/session
+//         credentials: "include",
 //       });
 
 //       if (!res.ok) {
@@ -48,10 +50,15 @@
 //       const data = await res.json();
 //       console.log("Post created:", data);
 //       alert("Post created successfully!");
-//       router.push("/"); // Redirect to home page or post list
-//     } catch (error: any) {
-//       console.error("Create post error:", error);
-//       alert(error.message || "An error occurred while creating post.");
+//       router.push("/");
+//     } catch (error: unknown) {
+//       if (error instanceof Error) {
+//         console.error("Create post error:", error);
+//         alert(error.message || "An error occurred while creating post.");
+//       } else {
+//         console.error("Unknown error:", error);
+//         alert("An unknown error occurred while creating post.");
+//       }
 //     } finally {
 //       setIsSubmitting(false);
 //     }
@@ -63,7 +70,7 @@
 //         <div className="text-center p-8 bg-white rounded-2xl shadow-md">
 //           <h2 className="text-2xl font-bold mb-4 text-red-600">You must be logged in to create a post!</h2>
 //           <button
-//             onClick={() => router.push("/auth/login")}
+//             onClick={() => router.push("/login")}
 //             className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
 //           >
 //             Go to Login
@@ -113,15 +120,14 @@
 
 // export default CreatePostPage;
 
+
 "use client";
 
 import React, { useState } from "react";
-import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import { serverUrl } from "@/environment";
 
 const CreatePostPage = () => {
-  const { data: session } = betterAuthClient.useSession();
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
@@ -129,7 +135,9 @@ const CreatePostPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -176,22 +184,6 @@ const CreatePostPage = () => {
       setIsSubmitting(false);
     }
   };
-
-  if (!session?.user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#F1F1DB]">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-md">
-          <h2 className="text-2xl font-bold mb-4 text-red-600">You must be logged in to create a post!</h2>
-          <button
-            onClick={() => router.push("/login")}
-            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-          >
-            Go to Login
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#F1F1DB]">
