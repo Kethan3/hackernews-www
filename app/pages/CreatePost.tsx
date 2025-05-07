@@ -76,55 +76,99 @@
 
 // export default CreatePost;
 
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
-"use client"; // Add this line to mark the component as a client component
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
 
-import React, { useState } from "react";
-import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { useState } from "react";
+import { PlusIcon } from "lucide-react";
 import { serverUrl } from "@/environment";
 
-const CreatePost = ({ onPostCreated }: { onPostCreated: () => void }) => {
-  const { data: session } = betterAuthClient.useSession();
+export const CreatePost = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [content, setContent] = useState("");
+  const createPost = async () => {
+    if (text.trim() === "") return;
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setContent(e.target.value);
-  };
+    setIsSubmitting(true);
+    setError(null);
 
-  const handleCreatePost = async () => {
-    if (content.trim() === "") return;
+    try {
+      const response = await fetch(`${serverUrl}/posts`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ text }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    // Add logic for creating a post here (example API call)
-    await fetch(`${serverUrl}/api/posts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ content, userId: session?.user.id }),
-    });
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
 
-    onPostCreated();
-    setContent(""); // Clear content after posting
+      setIsOpen(false); // Close dialog after success
+      setText(""); // Reset text after post creation
+    } catch (err) {
+      setError("Failed to create post. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="w-full max-w-xs">
-      <input
-        type="text"
-        value={content}
-        onChange={handleContentChange}
-        placeholder="What's on your mind?"
-        className="w-full p-2 border rounded-md"
-      />
-      <button
-        onClick={handleCreatePost}
-        className="w-full mt-2 p-2 bg-blue-500 text-white rounded-md"
-      >
-        Create Post
-      </button>
-    </div>
+    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+      <DialogTrigger asChild>
+        <Button>
+          <PlusIcon />
+          Create Post
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>What's on your mind?</DialogTitle>
+          <DialogDescription>Politics, tech, climate, or anything else...</DialogDescription>
+        </DialogHeader>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            createPost();
+          }}
+          className="flex flex-col items-stretch gap-4"
+        >
+          <Textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Type your post here ..."
+            className="resize-none h-32"
+          />
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <Button
+            type="submit"
+            disabled={isSubmitting || !text.trim()}
+            className="mt-4"
+          >
+            {isSubmitting ? <Spinner /> : "Create"}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
-
-export default CreatePost;

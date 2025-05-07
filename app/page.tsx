@@ -9,10 +9,13 @@
 // }
 
 // export default RootPage
+
 import React from "react";
-import PostList from "./pages/PostsLists";
-import CreatePost from "./pages/CreatePost";
+
+
 import { betterAuthClient } from "@/lib/integrations/better-auth";
+import PostList from "./pages/PostsLists";
+import { CreatePost } from "./pages/CreatePost";
 
 const RootPage = () => {
   const { data: session } = betterAuthClient.useSession(); // Using betterAuthClient to get session data
@@ -24,10 +27,10 @@ const RootPage = () => {
         <PostList />
       </div>
 
-      {/* Create Post Button Section (Visible only if logged in) */}
+      {/* Create Post Section (Visible only if logged in) */}
       {session && (
         <div className="md:col-span-1 flex justify-center items-center">
-          <CreatePost onPostCreated={() => {}} />
+          <CreatePost  /> {/* Pass onPostCreated if you need to trigger actions after post creation */}
         </div>
       )}
     </div>
@@ -35,4 +38,5 @@ const RootPage = () => {
 };
 
 export default RootPage;
+
 
