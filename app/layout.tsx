@@ -1,20 +1,33 @@
-
+import { Inter } from "next/font/google";
 import Navbar from '@/components/Navbar';
 import './globals.css';
 
 import { PropsWithChildren } from 'react';
+import { ThemeProvider } from '@/components/theme-provider';
+
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: 'Hacker News',
   description: 'Built by kethan',
 };
 
-const  RootLayout = (props : PropsWithChildren) => {
+const  RootLayout = ({children } : PropsWithChildren) => {
   return (
-    <html lang="en"  >
-      <body >
-          <Navbar />
-        <main className="p-4 max-w-3xl mx-auto">{props.children}</main>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <main>
+          <Navbar/>
+          <div>
+          {children}  
+          </div>
+        </main>
+        </ThemeProvider>
       </body>
     </html>
   );
