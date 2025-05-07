@@ -86,10 +86,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { serverUrl } from "@/environment";
@@ -122,7 +120,7 @@ export const CreatePost = () => {
 
       setIsOpen(false); // Close dialog after success
       setText(""); // Reset text after post creation
-    } catch (err) {
+    } catch {
       setError("Failed to create post. Please try again later.");
     } finally {
       setIsSubmitting(false);
@@ -140,7 +138,7 @@ export const CreatePost = () => {
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>What's on your mind?</DialogTitle>
+          <DialogTitle>What&apos;s on your mind?</DialogTitle> {/* Fixed apostrophe */}
           <DialogDescription>Politics, tech, climate, or anything else...</DialogDescription>
         </DialogHeader>
 
@@ -172,3 +170,4 @@ export const CreatePost = () => {
     </Dialog>
   );
 };
+
