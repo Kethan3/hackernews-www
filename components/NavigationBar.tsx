@@ -47,16 +47,11 @@ const NavigationBar = () => {
   return (
     <nav className="w-full bg-background border-b shadow-sm text-foreground px-6 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Left - Logo and links */}
+        {/* Left - Logo */}
         <div className="flex items-center gap-6">
           <Link href="/" className="text-lg font-semibold hover:text-primary">
             Hacker News
           </Link>
-          {user && (
-            <Link href="/posts" className="text-sm hover:text-primary">
-              Posts
-            </Link>
-          )}
         </div>
 
         {/* Right - User Dropdown or Login */}
