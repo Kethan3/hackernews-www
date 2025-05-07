@@ -1,10 +1,10 @@
 "use client";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 
 import Link from "next/link";
-import NavigationBar from "@/components/Navbar";
+import NavigationBar from "@/components/NavBar";
 const LoginPage = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -26,8 +26,8 @@ const LoginPage = () => {
         username: loginData.username,
         password: loginData.password,
       });
-      
-      if ('data' in response && response.data?.user) {
+
+      if ("data" in response && response.data?.user) {
         router.push("/");
       } else {
         alert("Login failed. Please check your username and password.");

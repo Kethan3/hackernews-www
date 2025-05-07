@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import Link from "next/link";
-import NavigationBar from "@/components/Navbar";
+import NavigationBar from "@/components/NavBar";
 const SignUpPage = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -55,7 +55,6 @@ const SignUpPage = () => {
           email: formData.email,
           name: formData.name,
           password: formData.password,
-         
         },
         {
           onRequest: () => {
@@ -83,7 +82,6 @@ const SignUpPage = () => {
     }
   };
 
-  
   return (
     <>
       <NavigationBar hideNavItems />

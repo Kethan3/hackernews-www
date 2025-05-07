@@ -1,9 +1,10 @@
 import { Inter } from "next/font/google";
-import Navbar from '@/components/Navbar';
-import './globals.css';
 
-import { PropsWithChildren } from 'react';
-import { ThemeProvider } from '@/components/theme-provider';
+import "./globals.css";
+
+import { PropsWithChildren } from "react";
+import { ThemeProvider } from "@/components/theme-provider";
+
 
 
 const inter = Inter({
@@ -12,27 +13,28 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: 'Hacker News',
-  description: 'Built by kethan',
+  title: "Hacker News",
+  description: "Built by kethan",
 };
 
-const  RootLayout = ({children } : PropsWithChildren) => {
+const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        <main>
-          <Navbar/>
-          <div>
-          {children}  
-          </div>
-        </main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main>
+           
+            <div>{children}</div>
+          </main>
         </ThemeProvider>
       </body>
     </html>
   );
-}
+};
 
-
-export default  RootLayout
-
+export default RootLayout;
