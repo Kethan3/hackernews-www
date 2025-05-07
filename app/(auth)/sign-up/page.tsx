@@ -144,6 +144,7 @@
 // export default SignUpPage;
 
 
+
 "use client";
 
 import { betterAuthClient } from "@/lib/integrations/better-auth";
@@ -217,12 +218,10 @@ const SignUpPage = () => {
   return (
     <>
       {!data?.user && (
-        <div className="min-h-screen flex items-center justify-center bg-muted">
-          <Card className="w-full max-w-md p-4">
+        <div className="min-h-[calc(100vh-3rem)] flex items-center justify-center px-4 bg-background text-foreground">
+          <Card className="w-full max-w-md shadow-md border rounded-2xl">
             <CardHeader>
-              <CardTitle className="text-center text-2xl">
-                Create Account
-              </CardTitle>
+              <CardTitle className="text-2xl text-center">Create Account</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -280,7 +279,7 @@ const SignUpPage = () => {
                 Already have an account?{" "}
                 <Link
                   href="/login"
-                  className="text-blue-600 hover:underline ml-1"
+                  className="text-primary underline hover:opacity-80"
                 >
                   Log In
                 </Link>

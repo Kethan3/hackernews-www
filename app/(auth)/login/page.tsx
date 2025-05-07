@@ -1,10 +1,9 @@
 // "use client";
 // import { betterAuthClient } from "@/lib/integrations/better-auth";
 // import { useRouter } from "next/navigation";
-// import React, { useState } from "react";
+// import React, {  useState } from "react";
 
 // import Link from "next/link";
-
 
 // const LoginPage = () => {
 //   const { data } = betterAuthClient.useSession();
@@ -14,8 +13,7 @@
 //     password: "",
 //   });
 //   const [isLoading, setIsLoading] = useState(false);
-//   const handleChange = (e: Rea
-// ct.ChangeEvent<HTMLInputElement>) => {
+//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 //     setLoginData((prev) => ({
 //       ...prev,
 //       [e.target.name]: e.target.value,
@@ -28,8 +26,8 @@
 //         username: loginData.username,
 //         password: loginData.password,
 //       });
-
-//       if ("data" in response && response.data?.user) {
+      
+//       if ('data' in response && response.data?.user) {
 //         router.push("/");
 //       } else {
 //         alert("Login failed. Please check your username and password.");
@@ -41,14 +39,10 @@
 //       setIsLoading(false);
 //     }
 //   };
-//   // useEffect(() => {
-//   //   if (data?.user) {
-//   //     console.log("Logged in:", data.user);
-//   //   }
-//   // }, [data]);
+ 
 //   return (
 //     <>
-    
+
 //       {!data?.user && (
 //         <div className="container mx-auto min-h-[calc(100vh-3rem)] flex items-center justify-center bg-[#F1F1DB]">
 //           <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
