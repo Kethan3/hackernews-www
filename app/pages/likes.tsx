@@ -1,22 +1,26 @@
+
+
 // "use client";
 
 // import React, { useEffect, useState, useCallback } from "react";
 // import { useRouter } from "next/navigation";
 // import { serverUrl } from "@/environment";
+// import { betterAuthClient } from "@/lib/integrations/better-auth";
 
 // interface LikesProps {
 //   postId: string;
 // }
 
-// interface LikesResponse {
-//   likes: Array<{ id: string }>;
-//   likedByCurrentUser: boolean;
+// interface Like {
+//   id: string;
+//   userId: string;
 // }
 
 // const Likes = ({ postId }: LikesProps) => {
-//   const [likesCount, setLikesCount] = useState(0);
+//   const [likes, setLikes] = useState<Like[]>([]);
 //   const [liked, setLiked] = useState(false);
 //   const [loading, setLoading] = useState(false);
+//   const { data: session } = betterAuthClient.useSession(); // ✅ get session
 //   const router = useRouter();
 
 //   const fetchLikes = useCallback(async () => {
@@ -27,29 +31,43 @@
 //       });
 
 //       if (response.ok) {
-//         const data: LikesResponse = await response.json();
-//         setLikesCount(data.likes.length);
-//         setLiked(data.likedByCurrentUser);
+//         const data = await response.json();
+//         setLikes(data.likes || []);
 //       } else if (response.status === 401) {
-//         // Not logged in
 //         setLiked(false);
-//         setLikesCount(0);
+//         setLikes([]);
 //       }
 //     } catch (error) {
 //       console.error("Failed to fetch likes:", error);
 //     }
 //   }, [postId]);
 
+//   useEffect(() => {
+//     fetchLikes();
+//   }, [fetchLikes]);
+
+//   useEffect(() => {
+//     if (session?.user?.id) {
+//       const isLiked = likes.some((like) => like.userId === session.user.id);
+//       setLiked(isLiked);
+//     } else {
+//       setLiked(false);
+//     }
+//   }, [likes, session]);
+
 //   const handleLike = async () => {
 //     if (loading) return;
 //     setLoading(true);
 
+//     const userId = session?.user?.id;
 //     const method = liked ? "DELETE" : "POST";
-//     const optimisticLikes = liked ? likesCount - 1 : likesCount + 1;
 
-//     // Optimistic UI update
+//     const optimisticLikes = liked
+//       ? likes.filter((like) => like.userId !== userId)
+//       : [...likes, { id: "temp", userId: userId || "current" }];
+
 //     setLiked(!liked);
-//     setLikesCount(optimisticLikes);
+//     setLikes(optimisticLikes);
 
 //     try {
 //       const response = await fetch(`${serverUrl}/likes/on/${postId}`, {
@@ -58,33 +76,24 @@
 //       });
 
 //       if (response.status === 401) {
-//         // Revert UI and redirect
 //         setLiked(false);
-//         setLikesCount(likesCount); // revert
+//         fetchLikes();
 //         router.push("/login");
 //         return;
 //       }
 
 //       if (!response.ok) {
-//         // Revert on error
-//         setLiked(liked);
-//         setLikesCount(likesCount);
+//         fetchLikes(); // sync with server in case of error
 //       } else {
-//         // Sync with actual server data
-//         fetchLikes();
+//         fetchLikes(); // sync with server after success
 //       }
 //     } catch (error) {
 //       console.error("Error toggling like:", error);
-//       setLiked(liked); // revert on error
-//       setLikesCount(likesCount);
+//       fetchLikes();
 //     } finally {
 //       setLoading(false);
 //     }
 //   };
-
-//   useEffect(() => {
-//     fetchLikes();
-//   }, [fetchLikes]);
 
 //   return (
 //     <button
@@ -92,12 +101,13 @@
 //       className="flex items-center gap-2 text-sm text-blue-600 hover:underline disabled:opacity-50"
 //       disabled={loading}
 //     >
-//       {liked ? "Unlike" : "Like"} ({likesCount})
+//       {liked ? "Unlike" : "Like"} ({likes.length})
 //     </button>
 //   );
 // };
 
 // export default Likes;
+
 
 
 "use client";
@@ -120,8 +130,8 @@ const Likes = ({ postId }: LikesProps) => {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { data: session } = betterAuthClient.useSession(); // ✅ get session
   const router = useRouter();
+  const { data: session } = betterAuthClient.useSession();
 
   const fetchLikes = useCallback(async () => {
     try {
@@ -133,6 +143,10 @@ const Likes = ({ postId }: LikesProps) => {
       if (response.ok) {
         const data = await response.json();
         setLikes(data.likes || []);
+        const userId = session?.user?.id;
+        if (userId) {
+          setLiked(data.likes.some((like: Like) => like.userId === userId));
+        }
       } else if (response.status === 401) {
         setLiked(false);
         setLikes([]);
@@ -140,31 +154,24 @@ const Likes = ({ postId }: LikesProps) => {
     } catch (error) {
       console.error("Failed to fetch likes:", error);
     }
-  }, [postId]);
-
-  useEffect(() => {
-    fetchLikes();
-  }, [fetchLikes]);
-
-  useEffect(() => {
-    if (session?.user?.id) {
-      const isLiked = likes.some((like) => like.userId === session.user.id);
-      setLiked(isLiked);
-    } else {
-      setLiked(false);
-    }
-  }, [likes, session]);
+  }, [postId, session?.user?.id]);
 
   const handleLike = async () => {
     if (loading) return;
-    setLoading(true);
 
-    const userId = session?.user?.id;
+    // Redirect if user is not logged in
+    if (!session?.user?.id) {
+      router.push("/login");
+      return;
+    }
+
+    setLoading(true);
+    const userId = session.user.id;
     const method = liked ? "DELETE" : "POST";
 
     const optimisticLikes = liked
       ? likes.filter((like) => like.userId !== userId)
-      : [...likes, { id: "temp", userId: userId || "current" }];
+      : [...likes, { id: "temp", userId }];
 
     setLiked(!liked);
     setLikes(optimisticLikes);
@@ -175,17 +182,10 @@ const Likes = ({ postId }: LikesProps) => {
         credentials: "include",
       });
 
-      if (response.status === 401) {
-        setLiked(false);
-        fetchLikes();
-        router.push("/login");
-        return;
-      }
-
       if (!response.ok) {
-        fetchLikes(); // sync with server in case of error
+        fetchLikes();
       } else {
-        fetchLikes(); // sync with server after success
+        fetchLikes();
       }
     } catch (error) {
       console.error("Error toggling like:", error);
@@ -194,6 +194,10 @@ const Likes = ({ postId }: LikesProps) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchLikes();
+  }, [fetchLikes]);
 
   return (
     <button
