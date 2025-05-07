@@ -196,7 +196,7 @@ const NavigationBar = () => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push("/profile")}>
+                <DropdownMenuItem onClick={() => router.push("/user")}>
                   <UserIcon className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
