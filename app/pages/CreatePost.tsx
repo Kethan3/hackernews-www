@@ -1,3 +1,5 @@
+
+"use client"
 import React, { useState } from "react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { serverUrl } from "@/environment";
