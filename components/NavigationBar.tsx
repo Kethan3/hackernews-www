@@ -58,7 +58,7 @@
 //       {/* Right side - Auth buttons */}
 //       <div className="flex items-center space-x-4 text-sm">
 //         <div className="border-r border-black px-2">
-          
+
 //         <Link href="/user" className="hover:text-amber-300">
 //       {data?.user.username}
 //     </Link>
@@ -86,11 +86,7 @@
 
 // export default NavigationBar;
 
-
-
-
 //---------------------------------------------------------------------------------------
-
 
 // "use client";
 
@@ -256,11 +252,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTheme } from "next-themes";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -337,15 +329,7 @@ const NavigationBar = () => {
 
           {!user ? (
             <Link href="/login">
-              <Button
-                variant="outline"
-                className={`text-sm border ${theme === "light"
-                  ? "bg-black text-white border-white"
-                  : "bg-white text-black border-black"
-                } hover:bg-inherit hover:text-inherit hover:border-inherit`}
-              >
-                Login
-              </Button>
+              <Button>Login</Button>
             </Link>
           ) : (
             <DropdownMenu>
