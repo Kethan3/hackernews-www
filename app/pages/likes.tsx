@@ -1,5 +1,4 @@
 
-
 // "use client";
 
 // import React, { useEffect, useState, useCallback } from "react";
@@ -20,8 +19,8 @@
 //   const [likes, setLikes] = useState<Like[]>([]);
 //   const [liked, setLiked] = useState(false);
 //   const [loading, setLoading] = useState(false);
-//   const { data: session } = betterAuthClient.useSession(); // ✅ get session
 //   const router = useRouter();
+//   const { data: session } = betterAuthClient.useSession();
 
 //   const fetchLikes = useCallback(async () => {
 //     try {
@@ -33,6 +32,10 @@
 //       if (response.ok) {
 //         const data = await response.json();
 //         setLikes(data.likes || []);
+//         const userId = session?.user?.id;
+//         if (userId) {
+//           setLiked(data.likes.some((like: Like) => like.userId === userId));
+//         }
 //       } else if (response.status === 401) {
 //         setLiked(false);
 //         setLikes([]);
@@ -40,31 +43,24 @@
 //     } catch (error) {
 //       console.error("Failed to fetch likes:", error);
 //     }
-//   }, [postId]);
-
-//   useEffect(() => {
-//     fetchLikes();
-//   }, [fetchLikes]);
-
-//   useEffect(() => {
-//     if (session?.user?.id) {
-//       const isLiked = likes.some((like) => like.userId === session.user.id);
-//       setLiked(isLiked);
-//     } else {
-//       setLiked(false);
-//     }
-//   }, [likes, session]);
+//   }, [postId, session?.user?.id]);
 
 //   const handleLike = async () => {
 //     if (loading) return;
-//     setLoading(true);
 
-//     const userId = session?.user?.id;
+//     // Redirect if user is not logged in
+//     if (!session?.user?.id) {
+//       router.push("/login");
+//       return;
+//     }
+
+//     setLoading(true);
+//     const userId = session.user.id;
 //     const method = liked ? "DELETE" : "POST";
 
 //     const optimisticLikes = liked
 //       ? likes.filter((like) => like.userId !== userId)
-//       : [...likes, { id: "temp", userId: userId || "current" }];
+//       : [...likes, { id: "temp", userId }];
 
 //     setLiked(!liked);
 //     setLikes(optimisticLikes);
@@ -75,17 +71,10 @@
 //         credentials: "include",
 //       });
 
-//       if (response.status === 401) {
-//         setLiked(false);
-//         fetchLikes();
-//         router.push("/login");
-//         return;
-//       }
-
 //       if (!response.ok) {
-//         fetchLikes(); // sync with server in case of error
+//         fetchLikes();
 //       } else {
-//         fetchLikes(); // sync with server after success
+//         fetchLikes();
 //       }
 //     } catch (error) {
 //       console.error("Error toggling like:", error);
@@ -94,6 +83,10 @@
 //       setLoading(false);
 //     }
 //   };
+
+//   useEffect(() => {
+//     fetchLikes();
+//   }, [fetchLikes]);
 
 //   return (
 //     <button
@@ -109,13 +102,16 @@
 // export default Likes;
 
 
-
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { serverUrl } from "@/environment";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { Button } from "@/components/ui/button";
+import { ThumbsUp } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 interface LikesProps {
   postId: string;
@@ -129,7 +125,8 @@ interface Like {
 const Likes = ({ postId }: LikesProps) => {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [mutating, setMutating] = useState(false);
   const router = useRouter();
   const { data: session } = betterAuthClient.useSession();
 
@@ -139,59 +136,41 @@ const Likes = ({ postId }: LikesProps) => {
         method: "GET",
         credentials: "include",
       });
-
       if (response.ok) {
         const data = await response.json();
         setLikes(data.likes || []);
-        const userId = session?.user?.id;
-        if (userId) {
-          setLiked(data.likes.some((like: Like) => like.userId === userId));
-        }
-      } else if (response.status === 401) {
-        setLiked(false);
-        setLikes([]);
+        setLiked(data.likes.some((like: Like) => like.userId === session?.user?.id));
       }
     } catch (error) {
       console.error("Failed to fetch likes:", error);
+    } finally {
+      setLoading(false);
     }
   }, [postId, session?.user?.id]);
 
   const handleLike = async () => {
-    if (loading) return;
+    if (!session?.user?.id) return router.push("/login");
 
-    // Redirect if user is not logged in
-    if (!session?.user?.id) {
-      router.push("/login");
-      return;
-    }
-
-    setLoading(true);
-    const userId = session.user.id;
+    setMutating(true);
     const method = liked ? "DELETE" : "POST";
-
     const optimisticLikes = liked
-      ? likes.filter((like) => like.userId !== userId)
-      : [...likes, { id: "temp", userId }];
+      ? likes.filter((like) => like.userId !== session.user?.id)
+      : [...likes, { id: "temp", userId: session.user?.id }];
 
     setLiked(!liked);
     setLikes(optimisticLikes);
 
     try {
-      const response = await fetch(`${serverUrl}/likes/on/${postId}`, {
+      await fetch(`${serverUrl}/likes/on/${postId}`, {
         method,
         credentials: "include",
       });
-
-      if (!response.ok) {
-        fetchLikes();
-      } else {
-        fetchLikes();
-      }
+      fetchLikes();
     } catch (error) {
       console.error("Error toggling like:", error);
       fetchLikes();
     } finally {
-      setLoading(false);
+      setMutating(false);
     }
   };
 
@@ -199,14 +178,25 @@ const Likes = ({ postId }: LikesProps) => {
     fetchLikes();
   }, [fetchLikes]);
 
+  if (loading) {
+    return <Spinner size={20} className="text-muted-foreground" />;
+  }
+
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleLike}
-      className="flex items-center gap-2 text-sm text-blue-600 hover:underline disabled:opacity-50"
-      disabled={loading}
+      disabled={mutating}
+      className={cn("gap-1", liked && "text-blue-600")}
     >
-      {liked ? "Unlike" : "Like"} ({likes.length})
-    </button>
+      {mutating ? (
+        <Spinner size={16} className="mr-1" />
+      ) : (
+        <ThumbsUp className="w-4 h-4" />
+      )}
+      {likes.length}
+    </Button>
   );
 };
 
