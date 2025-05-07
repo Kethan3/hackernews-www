@@ -86,7 +86,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated, isLoggedIn }) =>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>What's on your mind?</DialogTitle>
+          <DialogTitle>What&apos;s on your mind?</DialogTitle>
           <DialogDescription>Share your thoughts or insights!</DialogDescription>
         </DialogHeader>
 
