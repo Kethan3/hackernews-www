@@ -13,5 +13,5 @@ const middleware = (request: NextRequest) => {
 
 export default middleware;
 export const config = {
-  matcher: ["/user","posts/create"],
+  matcher: ["/user","/posts/create"],
 };
