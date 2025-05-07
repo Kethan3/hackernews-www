@@ -5,7 +5,7 @@ const middleware = (request: NextRequest) => {
   const cookie = getSessionCookie(request);
 
   if (!cookie) {
-    return NextResponse.redirect(new URL("/log-in", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
