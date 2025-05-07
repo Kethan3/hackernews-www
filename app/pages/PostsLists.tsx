@@ -102,7 +102,6 @@
 // export default PostList;
 
 
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -134,8 +133,12 @@ const PostList = () => {
         if (!response.ok) throw new Error("Failed to fetch posts.");
         const data: { posts: Post[] } = await response.json();
         setPosts(data.posts);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong.");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Something went wrong.");
+        }
       } finally {
         setIsLoading(false);
       }

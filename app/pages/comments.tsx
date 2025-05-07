@@ -161,10 +161,9 @@
 
 // export default Comments;
 
-
 "use client";
 
-import React, { useState,  useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { serverUrl } from "@/environment";
 import { Button } from "@/components/ui/button";
@@ -202,7 +201,7 @@ const Comments = ({ postId }: CommentsProps) => {
         const data = await response.json();
         setComments(data.comments);
       }
-    } catch (error) {
+    } catch {
       console.error("Failed to fetch comments");
     } finally {
       setLoading(false);
@@ -225,7 +224,7 @@ const Comments = ({ postId }: CommentsProps) => {
         setContent("");
         fetchComments();
       }
-    } catch (error) {
+    } catch {
       console.error("Failed to add comment");
     }
   };
@@ -241,7 +240,7 @@ const Comments = ({ postId }: CommentsProps) => {
       if (response.ok) {
         setComments((prev) => prev.filter((comment) => comment.id !== commentId));
       }
-    } catch (error) {
+    } catch {
       console.error("Failed to delete comment");
     }
   };
