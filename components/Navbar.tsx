@@ -34,7 +34,7 @@ const NavigationBar = ({ hideNavItems = false }: NavigationBarProps) => {
   }
 
   return (
-    <nav className="w-full bg-green-400 text-white flex items-center justify-between px-6 py-3 shadow-md">
+    <nav className="w-full  text-white flex items-center justify-between px-6 py-3 shadow-md">
       {/* Left side - Logo and navigation links */}
       <div className="flex items-center space-x-6">
         <Link href="/" className="text-xl font-bold hover:text-amber-300">
