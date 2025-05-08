@@ -25,7 +25,7 @@ const Likes = ({ likes }: { likes: Like[] }) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {likes.length === 0 ? (
-          <p className="text-sm text-gray-500">You haven’t liked any posts yet.</p>
+          <p className="text-sm text-gray-500">You haven&pos;t liked any posts yet.</p>
         ) : (
           likes.map((like) => (
             <div
