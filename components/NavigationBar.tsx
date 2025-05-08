@@ -45,7 +45,7 @@ const NavigationBar = () => {
   const user = data?.user;
 
   return (
-    <nav className="w-full bg-background border-b shadow-sm text-foreground px-6 py-3">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-background/70 border-b shadow-sm text-foreground px-6 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Left - Logo */}
         <div className="flex items-center gap-6">
