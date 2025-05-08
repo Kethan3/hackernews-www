@@ -1,5 +1,3 @@
-// app/profile/_components/comments.tsx
-
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -26,7 +24,7 @@ const Comments = ({ comments }: { comments: Comment[] }) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {comments.length === 0 ? (
-          <p className="text-sm text-gray-500">You haven&pos;t made any comments yet.</p>
+          <p className="text-sm text-gray-500">You haven&apos;t made any comments yet.</p>
         ) : (
           comments.map((comment) => (
             <div
@@ -38,7 +36,7 @@ const Comments = ({ comments }: { comments: Comment[] }) => {
               </p>
               <p className="text-sm mt-1">{comment.content}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {new Date(comment.createdAt).toLocaleString()}
+                {new Date(comment.createdAt).toLocaleDateString()} at {new Date(comment.createdAt).toLocaleTimeString()}
               </p>
             </div>
           ))

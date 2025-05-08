@@ -1,5 +1,3 @@
-// app/profile/_components/likes.tsx
-
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -25,7 +23,7 @@ const Likes = ({ likes }: { likes: Like[] }) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {likes.length === 0 ? (
-          <p className="text-sm text-gray-500">You haven&pos;t liked any posts yet.</p>
+          <p className="text-sm text-gray-500">You haven&apos;t liked any posts yet.</p>
         ) : (
           likes.map((like) => (
             <div
@@ -36,7 +34,7 @@ const Likes = ({ likes }: { likes: Like[] }) => {
                 You liked: <span className="font-medium">{like.post.title}</span>
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                {new Date(like.createdAt).toLocaleString()}
+                {new Date(like.createdAt).toLocaleDateString()} at {new Date(like.createdAt).toLocaleTimeString()}
               </p>
             </div>
           ))
