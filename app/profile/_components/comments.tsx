@@ -26,7 +26,7 @@ const Comments = ({ comments }: { comments: Comment[] }) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {comments.length === 0 ? (
-          <p className="text-sm text-gray-500">You haven’t made any comments yet.</p>
+          <p className="text-sm text-gray-500">You haven&pos;t made any comments yet.</p>
         ) : (
           comments.map((comment) => (
             <div

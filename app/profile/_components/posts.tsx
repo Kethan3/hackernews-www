@@ -115,7 +115,7 @@ const Posts = ({ posts }: { posts: Post[] }) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {posts.length === 0 ? (
-          <p className="text-sm text-gray-500">You haven’t posted anything yet.</p>
+          <p className="text-sm text-gray-500">You haven&pos;t posted anything yet.</p>
         ) : (
           posts.map((post) => (
             <div
