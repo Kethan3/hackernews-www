@@ -94,7 +94,7 @@ import {
   PaginationLink,
   PaginationPrevious,
   PaginationNext,
-  PaginationEllipsis,
+ 
 } from "@/components/ui/pagination"; // Importing the pagination components
 
 interface Post {
