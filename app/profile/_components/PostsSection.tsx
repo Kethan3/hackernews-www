@@ -73,7 +73,6 @@
 // }
 
 
-
 "use client";
 
 import { useState } from "react";
@@ -81,7 +80,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
-
 import { useRouter } from "next/navigation";
 import { serverUrl } from "@/environment";
 
@@ -121,11 +119,12 @@ export default function PostsSection({ posts: initialPosts }: Props) {
   return (
     <div className="space-y-3">
       {posts.map((post) => (
-        <Card key={post.id}>
-          <CardContent
-            className="p-4 flex justify-between items-start cursor-pointer hover:bg-accent rounded-md"
-            onClick={() => router.push(`/posts/${post.id}`)}
-          >
+        <Card
+          key={post.id}
+          onClick={() => router.push(`/posts/${post.id}`)}
+          className="cursor-pointer hover:bg-accent transition-colors"
+        >
+          <CardContent className="p-4 flex justify-between items-start">
             <div>
               <p className="text-blue-600 dark:text-blue-400 font-medium">{post.title}</p>
               <p className="text-sm text-muted-foreground">
@@ -136,7 +135,7 @@ export default function PostsSection({ posts: initialPosts }: Props) {
               variant="ghost"
               size="icon"
               onClick={(e) => {
-                e.stopPropagation(); // prevent card click
+                e.stopPropagation(); // prevent routing
                 deletePost(post.id);
               }}
               disabled={deletingPostId === post.id}
