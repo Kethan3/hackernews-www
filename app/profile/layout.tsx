@@ -1,37 +1,22 @@
-import { Inter } from "next/font/google";
-import "./globals.css";
 import { PropsWithChildren } from "react";
-import { ThemeProvider } from "@/components/theme-provider";
 import NavigationBar from "@/components/NavigationBar";
-import { Metadata } from "next";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "User Profile | Hacker News",
-  description: "View and manage your Hacker News profile",
-};
 
 const ProfileLayout = ({ children }: PropsWithChildren) => {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="min-h-screen flex flex-col bg-background text-foreground">
-            <NavigationBar />
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <NavigationBar />
+      <div className="w-5xl mx-auto mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {/* Optional: Place any additional sidebar or navigation elements here */}
+          <div className="col-span-1">
+            {/* You can add profile-specific sidebar content here if needed */}
+          </div>
+          <div className="col-span-4">
             <main className="flex-1 p-4 pt-[4.5rem]">{children}</main>
           </div>
-        </ThemeProvider>
-      </body>
-    </html>
+        </div>
+      </div>
+    </div>
   );
 };
 
