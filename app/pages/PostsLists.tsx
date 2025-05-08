@@ -1,12 +1,17 @@
 
+
 // "use client";
 
-// import React from "react";
-// import Link from "next/link";
+// import React, { useState } from "react";
+// import { Spinner } from "@/components/ui/spinner";
+// import { Card, CardContent } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Trash2 } from "lucide-react";
+// import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from "@/components/ui/pagination";
+// import { useRouter } from "next/navigation";
+// import { serverUrl } from "@/environment";
 // import Likes from "./likes";
 // import Comments from "./comments";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { Spinner } from "@/components/ui/spinner";
 
 // interface Post {
 //   id: string;
@@ -17,13 +22,38 @@
 //   updatedAt: string;
 // }
 
-// const PostList = ({
-//   posts,
-//   loading,
-// }: {
-//   posts: Post[];
-//   loading: boolean;
-// }) => {
+// const PostList = ({ posts, loading, currentUserId }: { posts: Post[]; loading: boolean; currentUserId: string }) => {
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const POSTS_PER_PAGE = 10;
+
+//   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+//   const paginatedPosts = posts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE);
+
+//   const router = useRouter();
+
+//   const deletePost = async (postId: string) => {
+//     try {
+//       const res = await fetch(`${serverUrl}/posts/${postId}`, {
+//         method: "DELETE",
+//         credentials: "include",
+//       });
+//       if (res.ok) {
+//         // After deleting the post, reload the page using window.location.reload()
+//         window.location.reload(); // This will reload the current page
+//       }
+//     } catch (err) {
+//       console.error("Error deleting post:", err);
+//     }
+//   };
+
+//   const handlePrev = () => {
+//     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+//   };
+
+//   const handleNext = () => {
+//     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+//   };
+
 //   if (loading) {
 //     return (
 //       <div className="flex justify-center items-center mt-10">
@@ -42,144 +72,18 @@
 
 //   return (
 //     <div className="space-y-6">
-//       {posts.map((post) => (
-//         <Card key={post.id}>
+//       {paginatedPosts.map((post) => (
+//         <Card
+//           key={post.id}
+//           className="cursor-pointer hover:bg-accent transition-colors"
+//           onClick={() => router.push(`/posts/${post.id}`)}
+//         >
 //           <CardContent className="p-6 space-y-3">
-//             <Link
-//               href={`/posts/${post.id}`}
-//               className="text-xl font-semibold text-primary underline-offset-4 hover:underline"
-//             >
-//               {post.title}
-//             </Link>
-//             <p className="text-gray-700">{post.content}</p>
-//             <p className="text-sm text-muted-foreground">
-//               Posted on{" "}
-//               {new Date(post.createdAt).toLocaleString("en-IN", {
-//                 day: "2-digit",
-//                 month: "2-digit",
-//                 year: "numeric",
-//                 hour: "2-digit",
-//                 minute: "2-digit",
-//                 hour12: true,
-//                 timeZone: "Asia/Kolkata",
-//               })}
-//             </p>
-//             <div className="flex gap-4 pt-2">
-//               <Likes postId={post.id} />
-//               <Comments postId={post.id} />
-//             </div>
-//           </CardContent>
-//         </Card>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default PostList;
-
-
-
-
-
-
-
-
-// "use client";
-
-// import React, { useState } from "react";
-// import Link from "next/link";
-// import {
-//   Pagination,
-//   PaginationContent,
-//   PaginationItem,
-//   PaginationLink,
-//   PaginationPrevious,
-//   PaginationNext,
-// } from "@/components/ui/pagination";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { Spinner } from "@/components/ui/spinner";
-
-// // Define types
-// type User = {
-//   username: string;
-//   name: string;
-// };
-
-// type Comment = {
-//   id: string;
-//   content: string;
-//   createdAt: string;
-//   user: User;
-// };
-
-// type Post = {
-//   number: number;
-//   id: string;
-//   title: string;
-//   content: string;
-//   createdAt: string;
-//   updatedAt: string;
-//   userId: string;
-//   user: User;
-//   likeCount: number;
-//   likedByUser: boolean;
-//   comments: Comment[];
-// };
-
-// type PostListProps = {
-//   posts: Post[];
-//   loading: boolean;
-// };
-
-// export default function PostList({ posts, loading }: PostListProps) {
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const POSTS_PER_PAGE = 10;
-
-//   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
-//   const paginatedPosts = posts.slice(
-//     (currentPage - 1) * POSTS_PER_PAGE,
-//     currentPage * POSTS_PER_PAGE
-//   );
-
-//   const handlePrev = () => {
-//     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-//   };
-
-//   const handleNext = () => {
-//     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="flex justify-center items-center mt-10">
-//         <Spinner size={40} className="text-muted-foreground" />
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="max-w-3xl mx-auto py-10">
-//       <h1 className="text-3xl font-bold mb-6">Posts</h1>
-
-//       {paginatedPosts.length === 0 ? (
-//         <div className="text-center text-gray-600 mt-10">
-//           No posts available. Be the first to post!
-//         </div>
-//       ) : (
-//         paginatedPosts.map((post) => (
-//           <Link
-//             key={post.id}
-//             href={`/posts/${post.id}`}
-//             className="block"
-//           >
-//             <Card className="mb-6 cursor-pointer hover:shadow-lg transition">
-//               <CardContent className="p-6 space-y-3">
-//                 <h2 className="text-xl font-semibold text-primary">
-//                   {post.title}
-//                 </h2>
-//                 <p className="text-gray-700">{post.content}</p>
+//             <div className="flex justify-between">
+//               <div>
+//                 <h2 className="text-xl font-semibold text-primary">{post.title}</h2>
 //                 <p className="text-sm text-muted-foreground">
-//                   Posted by {post.user.name} (@{post.user.username}) on{" "}
+//                   Posted on{" "}
 //                   {new Date(post.createdAt).toLocaleString("en-IN", {
 //                     day: "2-digit",
 //                     month: "2-digit",
@@ -190,19 +94,28 @@
 //                     timeZone: "Asia/Kolkata",
 //                   })}
 //                 </p>
-//                 <div className="flex gap-4 pt-2">
-//                   <span className="text-sm text-gray-500">
-//                     Likes: {post.likeCount}
-//                   </span>
-//                   <span className="text-sm text-gray-500">
-//                     Comments: {post.comments.length}
-//                   </span>
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           </Link>
-//         ))
-//       )}
+//               </div>
+//               {post.userId === currentUserId && (
+//                 <Button
+//                   variant="ghost"
+//                   size="icon"
+//                   onClick={(e) => {
+//                     e.stopPropagation();
+//                     deletePost(post.id);
+//                   }}
+//                 >
+//                   <Trash2 className="w-5 h-5 text-destructive" />
+//                 </Button>
+//               )}
+//             </div>
+//             <p className="text-gray-700">{post.content}</p>
+//             <div className="flex gap-4 pt-2">
+//               <Likes postId={post.id} />
+//               <Comments postId={post.id} />
+//             </div>
+//           </CardContent>
+//         </Card>
+//       ))}
 
 //       {totalPages > 1 && (
 //         <Pagination className="mt-8">
@@ -235,7 +148,10 @@
 //       )}
 //     </div>
 //   );
-// }
+// };
+
+// export default PostList;
+
 
 "use client";
 
@@ -245,10 +161,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from "@/components/ui/pagination";
-import { useRouter } from "next/navigation";
 import { serverUrl } from "@/environment";
 import Likes from "./likes";
 import Comments from "./comments";
+import Link from "next/link";
 
 interface Post {
   id: string;
@@ -266,8 +182,6 @@ const PostList = ({ posts, loading, currentUserId }: { posts: Post[]; loading: b
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const paginatedPosts = posts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE);
 
-  const router = useRouter();
-
   const deletePost = async (postId: string) => {
     try {
       const res = await fetch(`${serverUrl}/posts/${postId}`, {
@@ -275,8 +189,7 @@ const PostList = ({ posts, loading, currentUserId }: { posts: Post[]; loading: b
         credentials: "include",
       });
       if (res.ok) {
-        // After deleting the post, reload the page using window.location.reload()
-        window.location.reload(); // This will reload the current page
+        window.location.reload();
       }
     } catch (err) {
       console.error("Error deleting post:", err);
@@ -310,15 +223,17 @@ const PostList = ({ posts, loading, currentUserId }: { posts: Post[]; loading: b
   return (
     <div className="space-y-6">
       {paginatedPosts.map((post) => (
-        <Card
-          key={post.id}
-          className="cursor-pointer hover:bg-accent transition-colors"
-          onClick={() => router.push(`/posts/${post.id}`)}
-        >
+        <Card key={post.id} className="transition-colors hover:bg-accent">
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-primary">{post.title}</h2>
+                <h2 className="text-xl font-semibold text-primary">
+                  <Link href={`/posts/${post.id}`} passHref>
+                    <Button variant="link" className="p-0 text-xl text-primary hover:underline">
+                      {post.title}
+                    </Button>
+                  </Link>
+                </h2>
                 <p className="text-sm text-muted-foreground">
                   Posted on{" "}
                   {new Date(post.createdAt).toLocaleString("en-IN", {
