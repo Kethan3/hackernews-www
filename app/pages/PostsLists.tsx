@@ -152,19 +152,25 @@
 
 // export default PostList;
 
-
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 import { serverUrl } from "@/environment";
 import Likes from "./likes";
 import Comments from "./comments";
-import Link from "next/link";
 
 interface Post {
   id: string;
@@ -175,12 +181,24 @@ interface Post {
   updatedAt: string;
 }
 
-const PostList = ({ posts, loading, currentUserId }: { posts: Post[]; loading: boolean; currentUserId: string }) => {
+const PostList = ({
+  posts,
+  loading,
+  currentUserId,
+}: {
+  posts: Post[];
+  loading: boolean;
+  currentUserId: string;
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const POSTS_PER_PAGE = 10;
+  const router = useRouter();
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
-  const paginatedPosts = posts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE);
+  const paginatedPosts = posts.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
 
   const deletePost = async (postId: string) => {
     try {
@@ -223,17 +241,23 @@ const PostList = ({ posts, loading, currentUserId }: { posts: Post[]; loading: b
   return (
     <div className="space-y-6">
       {paginatedPosts.map((post) => (
-        <Card key={post.id} className="transition-colors hover:bg-accent">
+        <Card
+          key={post.id}
+          className="transition-colors hover:bg-accent cursor-pointer"
+          onClick={() => router.push(`/posts/${post.id}`)}
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-primary">
-                  <Link href={`/posts/${post.id}`} passHref>
-                    <Button variant="link" className="p-0 text-xl text-primary hover:underline">
-                      {post.title}
-                    </Button>
-                  </Link>
-                </h2>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/posts/${post.id}`);
+                  }}
+                  className="text-xl font-semibold text-primary hover:underline focus:outline-none"
+                >
+                  {post.title}
+                </button>
                 <p className="text-sm text-muted-foreground">
                   Posted on{" "}
                   {new Date(post.createdAt).toLocaleString("en-IN", {
@@ -261,7 +285,10 @@ const PostList = ({ posts, loading, currentUserId }: { posts: Post[]; loading: b
               )}
             </div>
             <p className="text-gray-700">{post.content}</p>
-            <div className="flex gap-4 pt-2">
+            <div
+              className="flex gap-4 pt-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Likes postId={post.id} />
               <Comments postId={post.id} />
             </div>
