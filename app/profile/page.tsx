@@ -216,6 +216,154 @@
 
 // app/profile/page.tsx
 
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { betterAuthClient } from "@/lib/integrations/better-auth";
+// import { serverUrl } from "@/environment";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Spinner } from "@/components/ui/spinner";
+// import { UserIcon, FileText, MessageSquare, Heart } from "lucide-react";
+// import Posts from "./_components/posts";
+// import Comments from "./_components/comments";
+// import Likes from "./_components/likes";
+
+// interface Post {
+//   id: string;
+//   title: string;
+//   content: string;
+//   createdAt: string;
+// }
+
+// interface Comment {
+//   id: string;
+//   content: string;
+//   post: {
+//     id: string;
+//     title: string;
+//   };
+//   createdAt: string;
+// }
+
+// interface Like {
+//   id: string;
+//   post: {
+//     id: string;
+//     title: string;
+//   };
+//   createdAt: string;
+// }
+
+// interface UserData {
+//   user: {
+//     id: string;
+//     username: string;
+//     name: string;
+//     about: string;
+//     createdAt: string;
+//     updatedAt: string;
+//     posts: Post[];
+//     comments: Comment[];
+//     likes: Like[];
+//   };
+// }
+
+// const UserProfilePage = () => {
+//   const { data } = betterAuthClient.useSession();
+//   const [userData, setUserData] = useState<UserData | null>(null);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchUserInfo = async () => {
+//       if (!data?.user?.id) return;
+
+//       try {
+//         const res = await fetch(`${serverUrl}/users/me`, {
+//           method: "GET",
+//           credentials: "include",
+//         });
+//         const json = await res.json();
+//         if (res.ok) {
+//           setUserData(json);
+//         } else {
+//           console.error(json.error || "Failed to fetch user info");
+//         }
+//       } catch (err) {
+//         console.error("Error fetching user info:", err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchUserInfo();
+//   }, [data?.user?.id]);
+
+//   if (loading) {
+//     return (
+//       <div className="flex justify-center items-center h-64">
+//         <Spinner size={24} />
+//       </div>
+//     );
+//   }
+
+//   if (!data?.user || !userData) {
+//     return (
+//       <div className="p-6 text-center text-red-600">
+//         You must be logged in to view this page.
+//       </div>
+//     );
+//   }
+
+//   const { username, name, about, createdAt, posts, comments, likes } = userData.user;
+
+//   return (
+//     <div className="max-w-4xl mx-auto p-6 space-y-6">
+//       <Card>
+//         <CardHeader>
+//           <CardTitle className="flex items-center gap-2 text-green-700">
+//             <UserIcon className="w-6 h-6" />
+//             Your Profile
+//           </CardTitle>
+//         </CardHeader>
+//         <CardContent className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+//           <p>
+//             <span className="font-semibold">Name:</span> {name || "N/A"}
+//           </p>
+//           <p>
+//             <span className="font-semibold">About:</span>{" "}
+//             {about || "No about section provided."}
+//           </p>
+//           <p>
+//             <span className="font-semibold">Joined:</span>{" "}
+//             {new Date(createdAt).toLocaleDateString()}
+//           </p>
+//           <div className="flex gap-4 mt-4 text-gray-600 dark:text-gray-400">
+//             <span className="flex items-center gap-1">
+//               <FileText className="w-4 h-4" />
+//               Posts: {posts.length}
+//             </span>
+//             <span className="flex items-center gap-1">
+//               <MessageSquare className="w-4 h-4" />
+//               Comments: {comments.length}
+//             </span>
+//             <span className="flex items-center gap-1">
+//               <Heart className="w-4 h-4" />
+//               Likes: {likes.length}
+//             </span>
+//           </div>
+//         </CardContent>
+//       </Card>
+
+//       <Posts posts={posts} />
+//       <Comments comments={comments} />
+//       <Likes likes={likes} />
+//     </div>
+//   );
+// };
+
+// export default UserProfilePage;
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -326,6 +474,9 @@ const UserProfilePage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+          <p>
+            <span className="font-semibold">Username:</span> {username || "N/A"}
+          </p>
           <p>
             <span className="font-semibold">Name:</span> {name || "N/A"}
           </p>
