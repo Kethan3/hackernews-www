@@ -302,8 +302,8 @@ const PostList = ({
           </CardContent>
         </Card>
       ))}
-
-      {totalPages > 1 && (
+       
+      {totalPages > 0 && (
         <div className="flex justify-center mt-6">
           <Pagination>
             <PaginationContent>
