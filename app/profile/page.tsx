@@ -232,10 +232,9 @@
 
 // export default UserProfilePage;
 
-
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { serverUrl } from "@/environment";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import {
@@ -256,8 +255,6 @@ import {
 import PostsSection from "./_components/PostsSection";
 import CommentsSection from "./_components/CommentsSection";
 import LikesSection from "./_components/LikesSection";
-
-
 
 interface Post {
   id: string;
@@ -295,9 +292,8 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"posts" | "comments" | "likes">("posts");
-  const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = useCallback(async () => {
     if (!data?.user?.id) return;
     try {
       const res = await fetch(`${serverUrl}/users/me`, {
@@ -311,33 +307,11 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [data?.user?.id]);
 
   useEffect(() => {
     fetchUserInfo();
-  }, [data?.user?.id]);
-
-  const deletePost = async (postId: string) => {
-    setDeletingPostId(postId);
-    try {
-      const res = await fetch(`${serverUrl}/posts/${postId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (res.ok && userData) {
-        setUserData({
-          user: {
-            ...userData.user,
-            posts: userData.user.posts.filter((post) => post.id !== postId),
-          },
-        });
-      }
-    } catch (err) {
-      console.error("Error deleting post:", err);
-    } finally {
-      setDeletingPostId(null);
-    }
-  };
+  }, [fetchUserInfo]);
 
   if (loading) {
     return (
@@ -391,10 +365,7 @@ export default function ProfilePage() {
       </ToggleGroup>
 
       <div>
-        {view === "posts" && (
-          <PostsSection posts={posts} />
-
-        )}
+        {view === "posts" && <PostsSection posts={posts} />}
         {view === "comments" && <CommentsSection comments={comments} />}
         {view === "likes" && <LikesSection likes={likes} />}
       </div>
