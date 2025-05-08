@@ -111,7 +111,10 @@ const PostPage = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`${serverUrl}/posts/${id}`);
+        const response = await fetch(`${serverUrl}/posts/${id}`,{
+          method : "GET",
+          credentials : "include"
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch post.");
         }
