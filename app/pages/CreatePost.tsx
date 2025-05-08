@@ -1,7 +1,6 @@
 // "use client";
 
 // import React, { useState } from "react";
-// import { useRouter } from "next/navigation";
 // import { PlusIcon } from "lucide-react";
 // import { serverUrl } from "@/environment";
 
@@ -19,8 +18,11 @@
 // import { Textarea } from "@/components/ui/textarea";
 // import { Input } from "@/components/ui/input";
 
-// export const CreatePost = () => {
-//   const router = useRouter();
+// export const CreatePost = ({
+//   onPostCreated,
+// }: {
+//   onPostCreated?: () => void;
+// }) => {
 //   const [isOpen, setIsOpen] = useState(false);
 //   const [formData, setFormData] = useState({
 //     title: "",
@@ -62,10 +64,9 @@
 //         throw new Error(errorData.error || "Failed to create post");
 //       }
 
-//       alert("Post created successfully!");
 //       setIsOpen(false);
 //       setFormData({ title: "", content: "" });
-//       router.refresh(); // Refresh posts list
+//       onPostCreated?.();
 //     } catch (err) {
 //       if (err instanceof Error) {
 //         console.error(err);
@@ -89,7 +90,7 @@
 //       }}
 //     >
 //       <DialogTrigger asChild>
-//         <Button>
+//         <Button className="w-full sm:w-auto">
 //           <PlusIcon className="mr-2 h-4 w-4" />
 //           Create Post
 //         </Button>
@@ -122,7 +123,10 @@
 //           />
 
 //           <DialogFooter>
-//             <Button type="submit" disabled={isSubmitting || !formData.title.trim()}>
+//             <Button
+//               type="submit"
+//               disabled={isSubmitting || !formData.title.trim()}
+//             >
 //               {isSubmitting && <Spinner className="mr-2" />}
 //               Create
 //             </Button>
@@ -132,6 +136,7 @@
 //     </Dialog>
 //   );
 // };
+
 
 
 "use client";
@@ -154,7 +159,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
-export const CreatePost = ({ onPostCreated }: { onPostCreated?: () => void }) => {
+export const CreatePost = ({
+  onPostCreated,
+  floating = false,
+}: {
+  onPostCreated?: () => void;
+  floating?: boolean;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -196,7 +207,6 @@ export const CreatePost = ({ onPostCreated }: { onPostCreated?: () => void }) =>
         throw new Error(errorData.error || "Failed to create post");
       }
 
-      alert("Post created successfully!");
       setIsOpen(false);
       setFormData({ title: "", content: "" });
       onPostCreated?.();
@@ -223,9 +233,15 @@ export const CreatePost = ({ onPostCreated }: { onPostCreated?: () => void }) =>
       }}
     >
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-auto">
-          <PlusIcon className="mr-2 h-4 w-4" />
-          Create Post
+        <Button
+          className={
+            floating
+              ? "rounded-full h-14 w-14 p-0 shadow-lg bg-primary text-white hover:bg-primary/90"
+              : "w-full sm:w-auto"
+          }
+        >
+          <PlusIcon className={floating ? "h-6 w-6 mx-auto" : "mr-2 h-4 w-4"} />
+          {!floating && "Create Post"}
         </Button>
       </DialogTrigger>
 
@@ -256,7 +272,10 @@ export const CreatePost = ({ onPostCreated }: { onPostCreated?: () => void }) =>
           />
 
           <DialogFooter>
-            <Button type="submit" disabled={isSubmitting || !formData.title.trim()}>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !formData.title.trim()}
+            >
               {isSubmitting && <Spinner className="mr-2" />}
               Create
             </Button>
