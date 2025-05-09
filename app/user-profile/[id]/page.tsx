@@ -5,12 +5,12 @@ import { useParams } from "next/navigation";
 import { serverUrl } from "@/environment";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button"; // Make sure to import the Button component
+import { Button } from "@/components/ui/button";
 import PostSection from "../_components/PostSection";
 import CommentSection from "../_components/CommentSection";
 import LikeSection from "../_components/LikeSection";
+import { Spinner } from "@/components/ui/spinner"; // ✅ import Spinner
 
-// Defining the UserDetails interface within this file
 export interface UserDetails {
   user: {
     id: string;
@@ -55,8 +55,6 @@ const UserProfilePage = () => {
   const [user, setUser] = useState<UserDetails["user"] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // State to track the selected view (posts, comments, likes)
   const [selectedView, setSelectedView] = useState<'posts' | 'comments' | 'likes'>('posts');
 
   useEffect(() => {
@@ -78,7 +76,13 @@ const UserProfilePage = () => {
     fetchUser();
   }, [id]);
 
-  if (isLoading) return <div className="p-6 text-muted-foreground">Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="p-6 flex justify-center items-center text-muted-foreground">
+        <Spinner size={32} />
+      </div>
+    );
+
   if (error) return <div className="p-6 text-destructive">Error: {error}</div>;
   if (!user) return <div className="p-6 text-destructive">User not found.</div>;
 
