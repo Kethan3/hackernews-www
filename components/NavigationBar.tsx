@@ -22,7 +22,7 @@ import {
   Moon,
   Sun,
   Home,
-  Search,
+  // Search,
 } from "lucide-react";
 
 
@@ -31,7 +31,7 @@ const NavigationBar = () => {
   const router = useRouter();
   const { setTheme, theme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
+  // const [showSearch, setShowSearch] = useState(false);
 
   const handleLogout = async () => {
     setIsLoading(true);
