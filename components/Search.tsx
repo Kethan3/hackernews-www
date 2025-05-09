@@ -23,7 +23,7 @@ const SearchDropdown = ({ onClose }: Props) => {
       if (!query.trim()) return setResults([]);
 
       try {
-        const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+        const res = await fetch(`/posts/search?query=${encodeURIComponent(query)}`);
         const data = await res.json();
         setResults(data.posts);
       } catch {
