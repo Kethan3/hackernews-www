@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -76,6 +74,10 @@ const Comments = ({ postId }: CommentsProps) => {
   }, [postId]);
 
   const handleAddComment = async () => {
+    if (!currentUserId) {
+      return router.push("/login"); // Redirect to login if the user is not logged in
+    }
+
     try {
       const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
         method: "POST",
@@ -96,6 +98,10 @@ const Comments = ({ postId }: CommentsProps) => {
   };
 
   const handleDeleteComment = async (commentId: string) => {
+    if (!currentUserId) {
+      return router.push("/login"); // Redirect to login if the user is not logged in
+    }
+
     try {
       const response = await fetch(`${serverUrl}/comments/${commentId}`, {
         method: "DELETE",
@@ -114,6 +120,10 @@ const Comments = ({ postId }: CommentsProps) => {
   };
 
   const handleEditComment = async (commentId: string) => {
+    if (!currentUserId) {
+      return router.push("/login"); // Redirect to login if the user is not logged in
+    }
+
     try {
       const response = await fetch(`${serverUrl}/comments/${commentId}`, {
         method: "PATCH",
