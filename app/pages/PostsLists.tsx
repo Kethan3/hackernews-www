@@ -332,7 +332,7 @@ const PostList = ({
                     <AlertDialogHeader>
                       <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This action will permanently delete your post. You can't undo this.
+                        This action will permanently delete your post. You can&apos;t undo this.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
