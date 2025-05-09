@@ -42,7 +42,6 @@
 // }
 
 
-
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -53,7 +52,10 @@ import { Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { serverUrl } from "@/environment";
 
-interface Post { id: string; title: string; }
+interface Post {
+  id: string;
+  title: string;
+}
 interface Comment {
   id: string;
   content: string;
@@ -97,14 +99,17 @@ export default function CommentsSection({ comments: initialComments }: Props) {
           onClick={() => router.push(`/posts/${comment.postId}`)}
           className="cursor-pointer hover:bg-accent transition-colors"
         >
-          <CardContent className="p-4 flex justify-between items-start">
-            <div>
-              <p className="text-sm">{comment.content}</p>
+          <CardContent className="p-4 flex justify-between items-start gap-4">
+            <div className="space-y-1 max-w-[90%]">
+              <p className="text-sm text-foreground break-words">{comment.content}</p>
               <p className="text-xs text-muted-foreground">
                 Commented on: {new Date(comment.createdAt).toLocaleDateString()}
               </p>
               <p className="text-xs text-muted-foreground">
-                Post: {comment.post?.title || comment.postId}
+                Post:{" "}
+                <span className="text-blue-600 dark:text-blue-400 font-medium">
+                  {comment.post?.title || "Untitled Post"}
+                </span>
               </p>
             </div>
             <Button
