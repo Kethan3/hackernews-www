@@ -24,9 +24,16 @@ const CommentSection = ({ comments }: CommentSectionProps) => {
   return (
     <div>
       {comments.map(comment => (
-        <div key={comment.id} className="bg-muted rounded p-4 mb-4 cursor-pointer" onClick={() => handlePostClick(comment.postId)}>
+        <div
+          key={comment.id}
+          className="bg-muted rounded p-4 mb-4 cursor-pointer"
+          onClick={() => handlePostClick(comment.postId)}
+        >
           <p>{comment.content}</p>
-          <p className="text-sm text-muted-foreground">Commented on "{comment.postTitle}" on {new Date(comment.createdAt).toLocaleDateString()}</p>
+          <p className="text-sm text-muted-foreground">
+            Commented on &quot;{comment.postTitle}&quot; on{" "}
+            {new Date(comment.createdAt).toLocaleDateString()}
+          </p>
         </div>
       ))}
     </div>
