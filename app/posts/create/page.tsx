@@ -47,8 +47,7 @@ const CreatePostPage = () => {
         throw new Error(errorData.error || "Failed to create post");
       }
 
-      const data = await res.json();
-   
+     
       alert("Post created successfully!");
       router.push("/");
     } catch (error: unknown) {
