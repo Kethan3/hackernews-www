@@ -1,12 +1,10 @@
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { serverUrl } from "@/environment";
-import { CreatePost } from "./pages/CreatePost";
-import PostList from "./pages/PostsLists";
+import { CreatePost } from "./_pages/CreatePost";
+import PostList from "./_pages/PostsLists";
 
 const RootPage = () => {
   const { data: session } = betterAuthClient.useSession();

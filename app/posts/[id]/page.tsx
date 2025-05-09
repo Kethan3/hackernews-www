@@ -2,15 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Likes from "@/app/pages/likes";
-import Comments from "@/app/pages/comments";
+import Likes from "@/app/_pages/likes";
+import Comments from "@/app/_pages/comments";
 import { serverUrl } from "@/environment";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
-
 
 interface Post {
   id: string;
@@ -24,7 +23,6 @@ interface Post {
     name: string;
   };
 }
-
 
 const PostPage = () => {
   const { id } = useParams();
