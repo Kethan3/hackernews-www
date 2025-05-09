@@ -11,14 +11,20 @@ import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 
+
 interface Post {
   id: string;
   title: string;
   content: string;
   userId: string;
   createdAt: string;
-  user: { id: string; username: string; name: string };
+  user: {
+    id: string; // ✅ Must be included
+    username: string;
+    name: string;
+  };
 }
+
 
 const PostPage = () => {
   const { id } = useParams();
