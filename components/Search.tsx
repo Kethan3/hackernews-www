@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { serverUrl } from "@/environment";
 
 interface Post {
   id: string;
@@ -23,7 +24,7 @@ const SearchDropdown = ({ onClose }: Props) => {
       if (!query.trim()) return setResults([]);
 
       try {
-        const res = await fetch(`/posts/search?query=${encodeURIComponent(query)}`);
+        const res = await fetch(`${serverUrl}/posts/search?query=${encodeURIComponent(query)}`);
         const data = await res.json();
         setResults(data.posts);
       } catch {
