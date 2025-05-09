@@ -83,7 +83,6 @@
 // }
 
 
-
 "use client";
 
 import { useState } from "react";
@@ -142,6 +141,7 @@ export default function LikesSection({ likes: initialLikes }: Props) {
         >
           <CardContent className="p-4 flex justify-between items-start">
             <div>
+              {/* Display the title of the post that is liked */}
               <p className="text-blue-600 dark:text-blue-400 font-medium">
                 {like.post?.title || "Untitled Post"}
               </p>

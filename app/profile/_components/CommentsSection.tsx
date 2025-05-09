@@ -91,7 +91,6 @@
 // }
 
 
-
 "use client";
 
 import { useState } from "react";
@@ -154,6 +153,7 @@ export default function CommentsSection({ comments: initialComments }: Props) {
               <p className="text-sm text-foreground break-words">{comment.content}</p>
               <p className="text-xs text-muted-foreground">Commented on: {new Date(comment.createdAt).toLocaleDateString()}</p>
               <p className="text-xs text-muted-foreground">
+                {/* Displaying the title of the post the comment was made on */}
                 Post: <span className="text-blue-600 dark:text-blue-400 font-medium">{comment.post?.title || "Untitled Post"}</span>
               </p>
             </div>
