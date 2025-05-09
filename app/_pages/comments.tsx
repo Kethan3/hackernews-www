@@ -257,7 +257,6 @@
 
 // export default Comments;
 
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -318,22 +317,8 @@ const Comments = ({ postId }: CommentsProps) => {
   }, [postId]);
 
   useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setCommentsCount(data.comments.length);
-        }
-      } catch {
-        console.error("Failed to fetch comment count");
-      }
-    };
-
-    fetchCount();
-  }, [postId]);
+    fetchComments();
+  }, [fetchComments]);
 
   const handleAddComment = async () => {
     if (!currentUserId) return router.push("/login");
@@ -478,7 +463,7 @@ const Comments = ({ postId }: CommentsProps) => {
                             >
                               {comment.userName}
                             </Link>{" "}
-                            • {new Date(comment.createdAt).toLocaleDateString()}
+                            • {new Date(comment.createdAt).toLocaleString()}
                           </p>
                         </>
                       )}
