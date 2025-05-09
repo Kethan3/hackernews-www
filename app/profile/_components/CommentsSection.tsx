@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState } from "react";
@@ -8,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { serverUrl } from "@/environment";
 
 interface Comment {
@@ -26,24 +25,27 @@ interface Props {
 }
 
 export default function CommentsSection({ comments: initialComments }: Props) {
-  const [comments, setComments] = useState(initialComments);
+  const [comments, setComments] = useState<Comment[]>(initialComments);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null); // State to track the comment to delete
   const router = useRouter();
 
-  const deleteComment = async (id: string) => {
-    setDeletingId(id);
+  const deleteComment = async () => {
+    if (!deleteTargetId) return;
+    setDeletingId(deleteTargetId);
     try {
-      const res = await fetch(`${serverUrl}/comments/${id}`, {
+      const res = await fetch(`${serverUrl}/comments/${deleteTargetId}`, {
         method: "DELETE",
         credentials: "include",
       });
       if (res.ok) {
-        setComments((prev) => prev.filter((c) => c.id !== id));
+        setComments((prev) => prev.filter((c) => c.id !== deleteTargetId));
       }
     } catch (err) {
       console.error("Delete failed", err);
     } finally {
       setDeletingId(null);
+      setDeleteTargetId(null);
     }
   };
 
@@ -66,21 +68,40 @@ export default function CommentsSection({ comments: initialComments }: Props) {
                 Post: <span className="text-blue-600 dark:text-blue-400 font-medium">{comment.post?.title || "Untitled Post"}</span>
               </p>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteComment(comment.id);
-              }}
-              disabled={deletingId === comment.id}
-            >
-              {deletingId === comment.id ? (
-                <Spinner size={18} className="text-destructive" />
-              ) : (
-                <Trash2 className="w-5 h-5 text-destructive" />
-              )}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteTargetId(comment.id); // Set the comment ID to delete
+                  }}
+                >
+                  {deletingId === comment.id ? (
+                    <Spinner size={18} className="text-destructive" />
+                  ) : (
+                    <Trash2 className="w-5 h-5 text-destructive" />
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action will permanently delete your comment. You can&apos;t undo this.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => setDeleteTargetId(null)}>
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction onClick={deleteComment}>
+                    Yes, delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </CardContent>
         </Card>
       ))}
