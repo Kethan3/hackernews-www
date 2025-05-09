@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -12,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
-
 
 interface Post {
   id: string;
@@ -78,7 +75,8 @@ const PostPage = () => {
     }
   };
 
-  if (isLoading) return <div className="p-6 text-muted-foreground">Loading...</div>;
+  if (isLoading)
+    return <div className="p-6 text-muted-foreground">Loading...</div>;
   if (error) return <div className="p-6 text-destructive">Error: {error}</div>;
   if (!post) return <div className="p-6 text-destructive">Post not found.</div>;
 
@@ -91,7 +89,10 @@ const PostPage = () => {
           <h1 className="text-3xl font-bold text-primary">{post.title}</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Posted by{" "}
-            <span className="font-medium text-blue-600">
+            <span
+              className="font-medium text-blue-600 hover:underline cursor-pointer"
+              onClick={() => router.push(`/user-profile/${post.user.id}`)}
+            >
               {post.user.username}
             </span>{" "}
             on{" "}
@@ -120,7 +121,9 @@ const PostPage = () => {
       </CardHeader>
       <Separator />
       <CardContent className="space-y-6 pt-6 pb-2">
-        <p className="text-base text-foreground whitespace-pre-line">{post.content}</p>
+        <p className="text-base text-foreground whitespace-pre-line">
+          {post.content}
+        </p>
 
         <div className="flex items-center gap-4">
           <Likes postId={post.id} />
