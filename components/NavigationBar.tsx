@@ -24,7 +24,7 @@ import {
   Home,
   Search,
 } from "lucide-react";
-import SearchDropdown from "./Search";
+
 
 const NavigationBar = () => {
   const { data } = betterAuthClient.useSession();
@@ -71,11 +71,11 @@ const NavigationBar = () => {
             {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           </Button>
 
-          <Button variant="ghost" size="icon" onClick={() => setShowSearch(!showSearch)}>
+          {/* <Button variant="ghost" size="icon" onClick={() => setShowSearch(!showSearch)}>
             <Search className="w-5 h-5" />
           </Button>
 
-          {showSearch && <SearchDropdown onClose={() => setShowSearch(false)} />}
+          {showSearch && <SearchDropdown onClose={() => setShowSearch(false)} />} */}
 
           {!user ? (
             <Link href="/login">
