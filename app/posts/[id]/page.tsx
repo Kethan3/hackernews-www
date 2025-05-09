@@ -91,7 +91,10 @@ const PostPage = () => {
             Posted by{" "}
             <span
               className="font-medium text-blue-600 hover:underline cursor-pointer"
-              onClick={() => router.push(`/user-profile/${post.user.id}`)}
+              onClick={() => {
+                console.log("User ID:", post.user.id);
+                router.push(`/user-profile/${post.user.id}`);
+              }}
             >
               {post.user.username}
             </span>{" "}
