@@ -86,7 +86,7 @@ const Likes = ({ postId }: LikesProps) => {
       size="sm"
       onClick={handleLike}
       disabled={mutating}
-      className={cn("gap-1", liked && "text-blue-600")}
+      className={cn("gap-1", liked && "text-red-600")}
     >
       {mutating ? (
         <Spinner size={16} className="mr-1" />
