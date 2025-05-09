@@ -49,7 +49,7 @@ export default function CommentsSection({ comments: initialComments }: Props) {
     }
   };
 
-  if (!comments.length) return <p className="text-muted-foreground">No comments yet.</p>;
+  if (!comments.length) return <p className="text-muted-foreground">No commented posts yet.</p>;
 
   return (
     <div className="space-y-3">

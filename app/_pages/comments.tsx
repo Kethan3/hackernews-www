@@ -10,7 +10,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { Trash2, Edit3 } from "lucide-react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 
-
 interface CommentsProps {
   postId: string;
 }
@@ -30,6 +29,7 @@ const Comments = ({ postId }: CommentsProps) => {
   const [content, setContent] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [savingEdit, setSavingEdit] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
   const router = useRouter();
@@ -75,7 +75,7 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const handleAddComment = async () => {
     if (!currentUserId) {
-      return router.push("/login"); // Redirect to login if the user is not logged in
+      return router.push("/login");
     }
 
     try {
@@ -99,7 +99,7 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const handleDeleteComment = async (commentId: string) => {
     if (!currentUserId) {
-      return router.push("/login"); // Redirect to login if the user is not logged in
+      return router.push("/login");
     }
 
     try {
@@ -121,10 +121,12 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const handleEditComment = async (commentId: string) => {
     if (!currentUserId) {
-      return router.push("/login"); // Redirect to login if the user is not logged in
+      return router.push("/login");
     }
 
     try {
+      setSavingEdit(true);
+
       const response = await fetch(`${serverUrl}/comments/${commentId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -141,6 +143,8 @@ const Comments = ({ postId }: CommentsProps) => {
       }
     } catch {
       console.error("Failed to edit comment");
+    } finally {
+      setSavingEdit(false);
     }
   };
 
@@ -188,9 +192,14 @@ const Comments = ({ postId }: CommentsProps) => {
                           <div className="flex gap-2 mt-2">
                             <Button
                               size="sm"
+                              disabled={savingEdit}
                               onClick={() => handleEditComment(comment.id)}
                             >
-                              Save
+                              {savingEdit ? (
+                                <Spinner size={16} className="text-muted-foreground" />
+                              ) : (
+                                "Save"
+                              )}
                             </Button>
                             <Button
                               size="sm"
