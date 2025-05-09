@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -12,12 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Spinner } from "@/components/ui/spinner";
 import { FileText, MessageSquare, Heart, UserIcon } from "lucide-react";
 import PostsSection from "./_components/PostsSection";
 import CommentsSection from "./_components/CommentsSection";
 import LikesSection from "./_components/LikesSection";
+import { Button } from "@/components/ui/button";
 
 interface Post {
   id: string;
@@ -117,7 +115,7 @@ export default function ProfilePage() {
           <p><span className="font-semibold">Name:</span> {name || "N/A"}</p>
           <p><span className="font-semibold">About:</span> {about || "No about section provided."}</p>
           <p><span className="font-semibold">Joined:</span> {new Date(createdAt).toLocaleDateString()}</p>
-          <div className="flex gap-4 mt-4">
+          <div className="flex gap-4 mt-4 text-muted-foreground">
             <span className="flex items-center gap-1"><FileText className="w-4 h-4" /> Posts: {posts.length}</span>
             <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" /> Comments: {comments.length}</span>
             <span className="flex items-center gap-1"><Heart className="w-4 h-4" /> Likes: {likes.length}</span>
@@ -125,17 +123,32 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      <ToggleGroup
-        type="single"
-        value={view}
-        onValueChange={(val) => setView(val as typeof view)}
-        className="flex justify-center gap-2"
-      >
-        <ToggleGroupItem value="posts">Posts</ToggleGroupItem>
-        <ToggleGroupItem value="comments">Comments</ToggleGroupItem>
-        <ToggleGroupItem value="likes">Liked Posts</ToggleGroupItem>
-      </ToggleGroup>
+      {/* Styled Toggle Buttons */}
+      <div className="flex justify-center gap-4">
+        <Button
+          variant={view === "posts" ? "default" : "outline"}
+          onClick={() => setView("posts")}
+          className="rounded-full px-6"
+        >
+          Created Posts
+        </Button>
+        <Button
+          variant={view === "comments" ? "default" : "outline"}
+          onClick={() => setView("comments")}
+          className="rounded-full px-6"
+        >
+          Commented Posts
+        </Button>
+        <Button
+          variant={view === "likes" ? "default" : "outline"}
+          onClick={() => setView("likes")}
+          className="rounded-full px-6"
+        >
+          Liked Posts
+        </Button>
+      </div>
 
+      {/* Dynamic Section Rendering */}
       <div>
         {view === "posts" && <PostsSection posts={posts} />}
         {view === "comments" && <CommentsSection comments={comments} />}
