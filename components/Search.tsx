@@ -25,10 +25,17 @@ const SearchDropdown = ({ onClose }: Props) => {
 
       try {
         const res = await fetch(`${serverUrl}/posts/search?query=${encodeURIComponent(query)}`);
+        
+        if (!res.ok) {
+          throw new Error("Search failed with status: " + res.status);
+        }
+
         const data = await res.json();
-        setResults(data.posts);
-      } catch {
-        console.error("Search failed");
+
+        // Ensure that data.posts is an array
+        setResults(Array.isArray(data.posts) ? data.posts : []);
+      } catch (error) {
+        console.error("Search failed:", error);
       }
     }, 300);
 
@@ -49,16 +56,19 @@ const SearchDropdown = ({ onClose }: Props) => {
         className="mb-2"
       />
       <div className="max-h-60 overflow-y-auto space-y-2">
-        {results.map((post) => (
-          <div
-            key={post.id}
-            onClick={() => handleSelect(post.id)}
-            className="cursor-pointer hover:bg-muted px-2 py-1 rounded"
-          >
-            {post.title}
-          </div>
-        ))}
-        {query && results.length === 0 && <p className="text-sm text-muted-foreground">No results found</p>}
+        {results.length > 0 ? (
+          results.map((post) => (
+            <div
+              key={post.id}
+              onClick={() => handleSelect(post.id)}
+              className="cursor-pointer hover:bg-muted px-2 py-1 rounded"
+            >
+              {post.title}
+            </div>
+          ))
+        ) : query && results.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No results found</p>
+        ) : null}
       </div>
     </div>
   );
