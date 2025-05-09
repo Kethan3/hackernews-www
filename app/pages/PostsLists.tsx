@@ -90,7 +90,7 @@
 //       {paginatedPosts.map((post) => (
 //         <Card
 //           key={post.id}
-//           className="transition-colors hover:bg-accent cursor-pointer"
+//           className="transition-all duration-300 bg-white/10 dark:bg-white/5 border border-white/20 shadow-md backdrop-blur-md rounded-xl hover:bg-white/20 hover:dark:bg-white/10 cursor-pointer"
 //           onClick={() => router.push(`/posts/${post.id}`)}
 //         >
 //           <CardContent className="p-6 space-y-3">
@@ -131,7 +131,9 @@
 //                 </Button>
 //               )}
 //             </div>
-//             <p className="text-gray-700">{post.content}</p>
+//             <p className="text-gray-800 dark:text-gray-200 line-clamp-3">
+//               {post.content}
+//             </p>
 //             <div
 //               className="flex gap-4 pt-2"
 //               onClick={(e) => e.stopPropagation()}
@@ -179,6 +181,7 @@
 // export default PostList;
 
 
+
 "use client";
 
 import React, { useState } from "react";
@@ -195,6 +198,17 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { serverUrl } from "@/environment";
 import Likes from "./likes";
 import Comments from "./comments";
@@ -218,6 +232,7 @@ const PostList = ({
   currentUserId: string;
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const POSTS_PER_PAGE = 10;
   const router = useRouter();
 
@@ -227,9 +242,18 @@ const PostList = ({
     currentPage * POSTS_PER_PAGE
   );
 
-  const deletePost = async (postId: string) => {
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const confirmDeletePost = async () => {
+    if (!deleteTargetId) return;
     try {
-      const res = await fetch(`${serverUrl}/posts/${postId}`, {
+      const res = await fetch(`${serverUrl}/posts/${deleteTargetId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -239,14 +263,6 @@ const PostList = ({
     } catch (err) {
       console.error("Error deleting post:", err);
     }
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
 
   if (loading) {
@@ -299,16 +315,34 @@ const PostList = ({
                 </p>
               </div>
               {post.userId === currentUserId && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deletePost(post.id);
-                  }}
-                >
-                  <Trash2 className="w-5 h-5 text-destructive" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteTargetId(post.id);
+                      }}
+                    >
+                      <Trash2 className="w-5 h-5 text-destructive" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action will permanently delete your post. You can't undo this.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={confirmDeletePost}>
+                        Yes, delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
             <p className="text-gray-800 dark:text-gray-200 line-clamp-3">
@@ -333,7 +367,6 @@ const PostList = ({
                 <PaginationPrevious onClick={handlePrev} />
               </PaginationItem>
             )}
-
             {Array.from({ length: totalPages }, (_, i) => (
               <PaginationItem key={i}>
                 <PaginationLink
@@ -345,7 +378,6 @@ const PostList = ({
                 </PaginationLink>
               </PaginationItem>
             ))}
-
             {currentPage < totalPages && (
               <PaginationItem>
                 <PaginationNext onClick={handleNext} />
