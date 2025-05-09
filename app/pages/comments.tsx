@@ -9,6 +9,9 @@
 // import { Input } from "@/components/ui/input";
 // import { Card, CardContent } from "@/components/ui/card";
 // import { Spinner } from "@/components/ui/spinner";
+// import { Trash2 } from "lucide-react";
+// import { betterAuthClient } from "@/lib/integrations/better-auth";
+
 
 // interface CommentsProps {
 //   postId: string;
@@ -31,7 +34,9 @@
 //   const [loading, setLoading] = useState(false);
 //   const router = useRouter();
 
-//   // Fetch full comments list
+//   const { data } = betterAuthClient.useSession(); // get session
+//   const currentUserId = data?.user?.id ?? null;
+
 //   const fetchComments = useCallback(async () => {
 //     setLoading(true);
 //     try {
@@ -41,7 +46,7 @@
 //       if (response.ok) {
 //         const data = await response.json();
 //         setComments(data.comments);
-//         setCommentsCount(data.comments.length); // update count after fetch
+//         setCommentsCount(data.comments.length);
 //       }
 //     } catch {
 //       console.error("Failed to fetch comments");
@@ -50,7 +55,6 @@
 //     }
 //   }, [postId]);
 
-//   // Fetch only count on mount
 //   useEffect(() => {
 //     const fetchCount = async () => {
 //       try {
@@ -140,21 +144,22 @@
 //             <div className="space-y-2">
 //               {comments.map((comment) => (
 //                 <Card key={comment.id}>
-//                   <CardContent className="p-3 flex justify-between">
-//                     <div>
+//                   <CardContent className="p-3 flex justify-between items-start gap-3">
+//                     <div className="space-y-1">
 //                       <p className="text-sm">{comment.content}</p>
 //                       <p className="text-xs text-muted-foreground">
 //                         {new Date(comment.createdAt).toLocaleDateString()}
 //                       </p>
 //                     </div>
-//                     <Button
-//                       variant="link"
-//                       size="sm"
-//                       className="text-red-500 p-0"
-//                       onClick={() => handleDeleteComment(comment.id)}
-//                     >
-//                       Delete
-//                     </Button>
+//                     {currentUserId === comment.userId && (
+//                       <Button
+//                         variant="ghost"
+//                         size="icon"
+//                         onClick={() => handleDeleteComment(comment.id)}
+//                       >
+//                         <Trash2 className="w-4 h-4 text-red-500" />
+//                       </Button>
+//                     )}
 //                   </CardContent>
 //                 </Card>
 //               ))}
@@ -169,7 +174,6 @@
 // export default Comments;
 
 
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -179,7 +183,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { Trash2 } from "lucide-react";
+import { Trash2, Edit3 } from "lucide-react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 
 
@@ -202,9 +206,11 @@ const Comments = ({ postId }: CommentsProps) => {
   const [content, setContent] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState("");
   const router = useRouter();
 
-  const { data } = betterAuthClient.useSession(); // get session
+  const { data } = betterAuthClient.useSession();
   const currentUserId = data?.user?.id ?? null;
 
   const fetchComments = useCallback(async () => {
@@ -281,6 +287,27 @@ const Comments = ({ postId }: CommentsProps) => {
     }
   };
 
+  const handleEditComment = async (commentId: string) => {
+    try {
+      const response = await fetch(`${serverUrl}/comments/${commentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ content: editedContent }),
+      });
+
+      if (response.status === 401) return router.push("/login");
+
+      if (response.ok) {
+        setEditingCommentId(null);
+        setEditedContent("");
+        fetchComments();
+      }
+    } catch {
+      console.error("Failed to edit comment");
+    }
+  };
+
   return (
     <div className="w-full">
       <Button
@@ -315,20 +342,62 @@ const Comments = ({ postId }: CommentsProps) => {
               {comments.map((comment) => (
                 <Card key={comment.id}>
                   <CardContent className="p-3 flex justify-between items-start gap-3">
-                    <div className="space-y-1">
-                      <p className="text-sm">{comment.content}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(comment.createdAt).toLocaleDateString()}
-                      </p>
+                    <div className="space-y-1 w-full">
+                      {editingCommentId === comment.id ? (
+                        <>
+                          <Input
+                            value={editedContent}
+                            onChange={(e) => setEditedContent(e.target.value)}
+                          />
+                          <div className="flex gap-2 mt-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleEditComment(comment.id)}
+                            >
+                              Save
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setEditingCommentId(null);
+                                setEditedContent("");
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm">{comment.content}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(comment.createdAt).toLocaleDateString()}
+                          </p>
+                        </>
+                      )}
                     </div>
-                    {currentUserId === comment.userId && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteComment(comment.id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </Button>
+
+                    {currentUserId === comment.userId && editingCommentId !== comment.id && (
+                      <div className="flex flex-col gap-1 items-center">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setEditingCommentId(comment.id);
+                            setEditedContent(comment.content);
+                          }}
+                        >
+                          <Edit3 className="w-4 h-4 text-blue-500" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
