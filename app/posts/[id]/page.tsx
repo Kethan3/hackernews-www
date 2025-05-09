@@ -11,6 +11,19 @@ import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { Spinner } from "@/components/ui/spinner";
+
 interface Post {
   id: string;
   title: string;
@@ -18,7 +31,7 @@ interface Post {
   userId: string;
   createdAt: string;
   user: {
-    id: string; // ✅ Must be included
+    id: string;
     username: string;
     name: string;
   };
@@ -40,17 +53,11 @@ const PostPage = () => {
           method: "GET",
           credentials: "include",
         });
-        if (!response.ok) {
-          throw new Error("Failed to fetch post.");
-        }
+        if (!response.ok) throw new Error("Failed to fetch post.");
         const data = await response.json();
         setPost(data.post);
       } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("Something went wrong.");
-        }
+        setError(err instanceof Error ? err.message : "Something went wrong.");
       } finally {
         setIsLoading(false);
       }
@@ -79,8 +86,14 @@ const PostPage = () => {
     }
   };
 
-  if (isLoading)
-    return <div className="p-6 text-muted-foreground">Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="p-6 flex justify-center text-muted-foreground">
+        <Spinner size={32} />
+      </div>
+    );
+  }
+
   if (error) return <div className="p-6 text-destructive">Error: {error}</div>;
   if (!post) return <div className="p-6 text-destructive">Post not found.</div>;
 
@@ -95,10 +108,7 @@ const PostPage = () => {
             Posted by{" "}
             <span
               className="font-medium text-blue-600 hover:underline cursor-pointer"
-              onClick={() => {
-                console.log("User ID:", post.user.id);
-                router.push(`/user-profile/${post.user.id}`);
-              }}
+              onClick={() => router.push(`/user-profile/${post.user.id}`)}
             >
               {post.user.username}
             </span>{" "}
@@ -114,19 +124,34 @@ const PostPage = () => {
             })}
           </p>
         </div>
+
         {isAuthor && (
-          <Button
-            variant="destructive"
-            size="icon"
-            onClick={deletePost}
-            disabled={deleting}
-            title="Delete Post"
-          >
-            <Trash2 className="h-5 w-5" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="icon" title="Delete Post">
+                <Trash2 className="w-5 h-5 text-destructive" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action will permanently delete your post. You can't undo this.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={deletePost}>
+                  {deleting ? <Spinner size={20} /> : "Yes, delete"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </CardHeader>
+
       <Separator />
+
       <CardContent className="space-y-6 pt-6 pb-2">
         <p className="text-base text-foreground whitespace-pre-line">
           {post.content}
