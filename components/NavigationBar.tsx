@@ -22,8 +22,10 @@ import {
   Moon,
   Sun,
   Home,
-  // Search,
+  Search,
 } from "lucide-react";
+import SearchDropdown from "./Search";
+
 
 
 const NavigationBar = () => {
@@ -31,7 +33,7 @@ const NavigationBar = () => {
   const router = useRouter();
   const { setTheme, theme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
-  // const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -62,7 +64,7 @@ const NavigationBar = () => {
         </div>
 
         {/* Right: Theme + Search + User */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 relative">
           <Button
             variant="ghost"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
@@ -71,11 +73,13 @@ const NavigationBar = () => {
             {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           </Button>
 
-          {/* <Button variant="ghost" size="icon" onClick={() => setShowSearch(!showSearch)}>
+          <Button variant="ghost" size="icon" onClick={() => setShowSearch(!showSearch)}>
             <Search className="w-5 h-5" />
           </Button>
 
-          {showSearch && <SearchDropdown onClose={() => setShowSearch(false)} />} */}
+          {showSearch && (
+            <SearchDropdown onClose={() => setShowSearch(false)} />
+          )}
 
           {!user ? (
             <Link href="/login">
@@ -86,7 +90,11 @@ const NavigationBar = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2 px-2">
                   <Avatar className="h-6 w-6">
-                    {user.image ? <AvatarImage src={user.image} /> : <AvatarFallback>{user.name[0]}</AvatarFallback>}
+                    {user.image ? (
+                      <AvatarImage src={user.image} />
+                    ) : (
+                      <AvatarFallback>{user.name[0]}</AvatarFallback>
+                    )}
                   </Avatar>
                   <span className="text-sm hidden sm:inline">{user.name}</span>
                 </Button>
@@ -95,7 +103,11 @@ const NavigationBar = () => {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
-                      {user.image ? <AvatarImage src={user.image} /> : <AvatarFallback>{user.name[0]}</AvatarFallback>}
+                      {user.image ? (
+                        <AvatarImage src={user.image} />
+                      ) : (
+                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                      )}
                     </Avatar>
                     <div className="text-sm max-w-[200px] truncate">
                       <p className="font-medium">{user.name}</p>
