@@ -24,16 +24,16 @@ const SearchDropdown = ({ onClose }: Props) => {
       if (!query.trim()) return setResults([]);
 
       try {
-        const res = await fetch(`${serverUrl}/posts/search?query=${encodeURIComponent(query)}`);
-        
+        const res = await fetch(`${serverUrl}/posts/search?q=${encodeURIComponent(query)}`);
+
         if (!res.ok) {
           throw new Error("Search failed with status: " + res.status);
         }
 
         const data = await res.json();
 
-        // Ensure that data.posts is an array
-        setResults(Array.isArray(data.posts) ? data.posts : []);
+        // Access the returned data from `data.data`
+        setResults(Array.isArray(data.data) ? data.data : []);
       } catch (error) {
         console.error("Search failed:", error);
       }
@@ -75,5 +75,3 @@ const SearchDropdown = ({ onClose }: Props) => {
 };
 
 export default SearchDropdown;
-
-
