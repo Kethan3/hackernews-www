@@ -6,6 +6,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { serverUrl } from "@/environment";
 
 
 type Post = {
@@ -27,7 +28,7 @@ export default function SearchCombobox() {
     }
 
     try {
-      const res = await fetch(`/posts/search?q=${encodeURIComponent(value)}`);
+      const res = await fetch(`${serverUrl}/posts/search?q=${encodeURIComponent(value)}`);
       const data = await res.json();
       if (data.success) {
         setSearchResults(data.data);
