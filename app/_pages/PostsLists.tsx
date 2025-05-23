@@ -262,7 +262,7 @@ const PostList = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const POSTS_PER_PAGE = 10;
+  const POSTS_PER_PAGE = 5;
   const router = useRouter();
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
